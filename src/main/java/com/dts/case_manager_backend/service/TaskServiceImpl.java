@@ -37,4 +37,14 @@ public class TaskServiceImpl implements TaskService {
     public void deleteTask(Long id) {
 
     }
+
+    public Task taskDTOToTask(TaskDTO taskDTO) {
+        return Task.builder()
+                .title(taskDTO.title())
+                .description(taskDTO.description())
+                .status(taskDTO.status())
+                .createdDate(taskDTO.createdDate())
+                .dueDate(taskDTO.dueDate())
+                .build();
+    }
 }

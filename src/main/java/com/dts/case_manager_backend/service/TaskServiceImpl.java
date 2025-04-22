@@ -1,6 +1,7 @@
 package com.dts.case_manager_backend.service;
 
 import com.dts.case_manager_backend.exception.InvalidDTOException;
+import com.dts.case_manager_backend.exception.TaskNotFoundException;
 import com.dts.case_manager_backend.model.Task;
 import com.dts.case_manager_backend.model.TaskDTO;
 import com.dts.case_manager_backend.repository.TaskRepository;
@@ -18,11 +19,11 @@ public class TaskServiceImpl implements TaskService {
     public Task createTask(TaskDTO taskDTO) {
 
         if (containsNullFields(taskDTO)) {
-            throw new InvalidDTOException("input Task cannot contain null fields.");
+            throw new InvalidDTOException("Task could not be created because supplied tasks cannot have null fields.");
         }
 
         if (containsEmptyFields(taskDTO)) {
-            throw new InvalidDTOException("Input Task cannot contain empty string fields.");
+            throw new InvalidDTOException("Task could not be created because supplied tasks cannot have empty string fields.");
         }
 
         return taskRepository.save(taskDTOToTask(taskDTO));

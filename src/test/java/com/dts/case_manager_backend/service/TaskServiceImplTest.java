@@ -54,8 +54,7 @@ class TaskServiceImplTest {
                 .dueDate(LocalDateTime.of(2025, Month.FEBRUARY, 2, 2, 2, 2))
                 .build();
 
-        when(taskServiceImpl.taskDTOToTask(Mockito.any(TaskDTO.class))).thenReturn(expectedTask);
-        when(mockTaskRepository.save(expectedTask)).thenReturn(expectedTask);
+        when(mockTaskRepository.save(Mockito.any(Task.class))).thenReturn(expectedTask);
 
         //Act
         Task returnedTask = taskServiceImpl.createTask(inputTaskDTO);

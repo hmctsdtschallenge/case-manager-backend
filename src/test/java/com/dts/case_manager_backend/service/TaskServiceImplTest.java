@@ -404,6 +404,6 @@ class TaskServiceImplTest {
         when(mockTaskRepository.findById(1L)).thenReturn(Optional.empty());
 
         //Act & Assert
-        assertDoesNotThrow(() -> taskServiceImpl.deleteTask(1L));
+        assertThrows(TaskNotFoundException.class, () -> taskServiceImpl.deleteTask(1L));
     }
 }

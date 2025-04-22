@@ -8,6 +8,7 @@ import com.dts.case_manager_backend.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -36,7 +37,11 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<Task> retrieveAllTasks() {
-        return List.of();
+
+        List<Task> tasks = new ArrayList<>();
+        taskRepository.findAll().forEach(tasks::add);
+
+        return tasks;
     }
 
     @Override

@@ -290,7 +290,7 @@ class TaskServiceImplTest {
     @DisplayName("updateTaskStatus returns updated task when passed id which exists, and valid status")
     void updateTaskStatusValidIdAndStatus() {
         //Arrange
-        Task expectedTask = Task.builder()
+        Task expectedTask1 = Task.builder()
             .id(1L)
             .title("test title")
             .description("test description")
@@ -299,38 +299,62 @@ class TaskServiceImplTest {
             .dueDate(LocalDateTime.of(2025, Month.FEBRUARY, 2, 2, 2, 2))
             .build();
 
-        when(mockTaskRepository.findById(1L)).thenReturn(Optional.of(expectedTask));
+        Task expectedTask2= Task.builder()
+                .id(1L)
+                .title("test title")
+                .description("test description")
+                .status("Not yet started")
+                .createdDate(LocalDateTime.of(2025, Month.JANUARY, 1, 1, 1, 1))
+                .dueDate(LocalDateTime.of(2025, Month.FEBRUARY, 2, 2, 2, 2))
+                .build();
+
+        Task expectedTask3 = Task.builder()
+                .id(1L)
+                .title("test title")
+                .description("test description")
+                .status("Not yet started")
+                .createdDate(LocalDateTime.of(2025, Month.JANUARY, 1, 1, 1, 1))
+                .dueDate(LocalDateTime.of(2025, Month.FEBRUARY, 2, 2, 2, 2))
+                .build();
+
+        when(mockTaskRepository.findById(1L)).thenReturn(Optional.of(expectedTask1));
+        when(mockTaskRepository.findById(2L)).thenReturn(Optional.of(expectedTask2));
+        when(mockTaskRepository.findById(3L)).thenReturn(Optional.of(expectedTask3));
+
+        when(mockTaskRepository.save(expectedTask1)).thenReturn(expectedTask1);
+        when(mockTaskRepository.save(expectedTask2)).thenReturn(expectedTask2);
+        when(mockTaskRepository.save(expectedTask3)).thenReturn(expectedTask3);
 
         //Act
         Task returnedTask1 = taskServiceImpl.updateTaskStatus(1L, "Not yet started");
-        Task returnedTask2 = taskServiceImpl.updateTaskStatus(1L, "In progress");
-        Task returnedTask3 = taskServiceImpl.updateTaskStatus(1L, "Complete");
+        Task returnedTask2 = taskServiceImpl.updateTaskStatus(2L, "In progress");
+        Task returnedTask3 = taskServiceImpl.updateTaskStatus(3L, "Complete");
 
         //Assert
         assertAll(
-                () -> assertEquals(expectedTask.getId(), returnedTask1.getId()),
-                () -> assertEquals(expectedTask.getId(), returnedTask2.getId()),
-                () -> assertEquals(expectedTask.getId(), returnedTask3.getId()),
+                () -> assertEquals(expectedTask1.getId(), returnedTask1.getId()),
+                () -> assertEquals(expectedTask2.getId(), returnedTask2.getId()),
+                () -> assertEquals(expectedTask3.getId(), returnedTask3.getId()),
 
-                () -> assertEquals(expectedTask.getTitle(), returnedTask1.getTitle()),
-                () -> assertEquals(expectedTask.getTitle(), returnedTask2.getTitle()),
-                () -> assertEquals(expectedTask.getTitle(), returnedTask3.getTitle()),
+                () -> assertEquals(expectedTask1.getTitle(), returnedTask1.getTitle()),
+                () -> assertEquals(expectedTask2.getTitle(), returnedTask2.getTitle()),
+                () -> assertEquals(expectedTask3.getTitle(), returnedTask3.getTitle()),
 
-                () -> assertEquals(expectedTask.getDescription(), returnedTask1.getDescription()),
-                () -> assertEquals(expectedTask.getDescription(), returnedTask2.getDescription()),
-                () -> assertEquals(expectedTask.getDescription(), returnedTask3.getDescription()),
-
-                () -> assertEquals(expectedTask.getCreatedDate(), returnedTask1.getCreatedDate()),
-                () -> assertEquals(expectedTask.getCreatedDate(), returnedTask2.getCreatedDate()),
-                () -> assertEquals(expectedTask.getCreatedDate(), returnedTask3.getCreatedDate()),
-
-                () -> assertEquals(expectedTask.getDueDate(), returnedTask1.getDueDate()),
-                () -> assertEquals(expectedTask.getDueDate(), returnedTask2.getDueDate()),
-                () -> assertEquals(expectedTask.getDueDate(), returnedTask3.getDueDate()),
+                () -> assertEquals(expectedTask1.getDescription(), returnedTask1.getDescription()),
+                () -> assertEquals(expectedTask2.getDescription(), returnedTask2.getDescription()),
+                () -> assertEquals(expectedTask3.getDescription(), returnedTask3.getDescription()),
 
                 () -> assertEquals("Not yet started", returnedTask1.getStatus()),
-                () -> assertEquals("In progress", returnedTask1.getStatus()),
-                () -> assertEquals("Complete", returnedTask1.getStatus()));
+                () -> assertEquals("In progress", returnedTask2.getStatus()),
+                () -> assertEquals("Complete", returnedTask3.getStatus()),
+
+                () -> assertEquals(expectedTask1.getCreatedDate(), returnedTask1.getCreatedDate()),
+                () -> assertEquals(expectedTask2.getCreatedDate(), returnedTask2.getCreatedDate()),
+                () -> assertEquals(expectedTask3.getCreatedDate(), returnedTask3.getCreatedDate()),
+
+                () -> assertEquals(expectedTask1.getDueDate(), returnedTask1.getDueDate()),
+                () -> assertEquals(expectedTask2.getDueDate(), returnedTask2.getDueDate()),
+                () -> assertEquals(expectedTask3.getDueDate(), returnedTask3.getDueDate()));
     }
 
     @Test

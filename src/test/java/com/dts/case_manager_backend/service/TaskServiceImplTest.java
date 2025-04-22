@@ -334,7 +334,7 @@ class TaskServiceImplTest {
     }
 
     @Test
-    @DisplayName("updateTaskStatus throws TaskNotFoundException when passed invalid status")
+    @DisplayName("updateTaskStatus throws InvalidDTOException when passed invalid status")
     void updateTaskStatusInvalidStatus() {
         //Arrange
         Task taskToEdit = Task.builder()

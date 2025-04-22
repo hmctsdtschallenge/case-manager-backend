@@ -1,5 +1,6 @@
 package com.dts.case_manager_backend.service;
 
+import com.dts.case_manager_backend.exception.InvalidDTOException;
 import com.dts.case_manager_backend.model.Task;
 import com.dts.case_manager_backend.model.TaskDTO;
 import com.dts.case_manager_backend.repository.TaskRepository;
@@ -15,7 +16,16 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task createTask(TaskDTO taskDTO) {
-        return null;
+
+        if (containsNullFields(taskDTO)) {
+            throw new InvalidDTOException("input Task cannot contain null fields.");
+        }
+
+        if (containsEmptyFields(taskDTO)) {
+            throw new InvalidDTOException("Input Task cannot contain empty string fields.");
+        }
+
+        return taskRepository.save(taskDTOToTask(taskDTO));
     }
 
     @Override
@@ -47,4 +57,24 @@ public class TaskServiceImpl implements TaskService {
                 .dueDate(taskDTO.dueDate())
                 .build();
     }
+
+    public boolean containsNullFields(TaskDTO taskDTO) {
+        try {
+            return taskDTO.title() == null ||
+                    taskDTO.description() == null ||
+                    taskDTO.status() == null ||
+                    taskDTO.createdDate() == null ||
+                    taskDTO.dueDate() == null;}
+        catch (NullPointerException e) {
+            return true;
+        }
+    }
+
+    public boolean containsEmptyFields(TaskDTO taskDTO) {
+        return taskDTO.title().isEmpty() ||
+                taskDTO.description().isEmpty() ||
+                taskDTO.status().isEmpty();
+    }
+
+
 }

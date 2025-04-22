@@ -9,6 +9,6 @@ public interface TaskService {
     Task createTask(TaskDTO taskDTO);
     Task retrieveTaskById(Long id);
     List<Task> retrieveAllTasks();
-    Task updateTaskStatus(Long id);
+    Task updateTaskStatus(Long id, String status);
     void deleteTask(Long id);
 }

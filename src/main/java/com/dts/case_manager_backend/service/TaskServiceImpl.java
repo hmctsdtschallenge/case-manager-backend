@@ -29,7 +29,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task updateTaskStatus(Long id) {
+    public Task updateTaskStatus(Long id, String status) {
         return null;
     }
 

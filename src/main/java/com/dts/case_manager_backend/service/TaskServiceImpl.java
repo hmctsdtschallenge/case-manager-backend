@@ -16,7 +16,7 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     TaskRepository taskRepository;
 
-    List<String> validStatuses = List.of("Not yet started", "In progress", "Complete");
+    private List<String> validStatuses = List.of("Not yet started", "In progress", "Complete");
 
     @Override
     public Task createTask(TaskDTO taskDTO) {
@@ -77,7 +77,7 @@ public class TaskServiceImpl implements TaskService {
                 .build();
     }
 
-    public boolean containsNullFields(TaskDTO taskDTO) {
+    private boolean containsNullFields(TaskDTO taskDTO) {
         try {
             return taskDTO.title() == null ||
                     taskDTO.description() == null ||
@@ -89,7 +89,7 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
-    public boolean containsEmptyFields(TaskDTO taskDTO) {
+    private boolean containsEmptyFields(TaskDTO taskDTO) {
         return taskDTO.title().isEmpty() ||
                 taskDTO.description().isEmpty() ||
                 taskDTO.status().isEmpty();

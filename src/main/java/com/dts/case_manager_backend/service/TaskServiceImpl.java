@@ -16,6 +16,8 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     TaskRepository taskRepository;
 
+    List<String> validStatuses = List.of("Not yet started", "In progress", "Complete");
+
     @Override
     public Task createTask(TaskDTO taskDTO) {
 
@@ -46,7 +48,15 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task updateTaskStatus(Long id, String status) {
-        return null;
+        Task taskToUpdate = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException("Task cannot be updated because no task could be found with the supplied id"));
+
+        if (!isValidStatus(status)) {
+            throw new InvalidDTOException("Task cannot be updated because supplied status is not valid.  Valid statuses are: ".concat(validStatuses.toString()));
+        }
+
+        taskToUpdate.setStatus(status);
+
+        return taskRepository.save(taskToUpdate);
     }
 
     @Override
@@ -80,6 +90,10 @@ public class TaskServiceImpl implements TaskService {
         return taskDTO.title().isEmpty() ||
                 taskDTO.description().isEmpty() ||
                 taskDTO.status().isEmpty();
+    }
+
+    private boolean isValidStatus(String status) {
+        return validStatuses.contains(status);
     }
 
 

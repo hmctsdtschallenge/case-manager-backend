@@ -1,5 +1,6 @@
 package com.dts.case_manager_backend.controller;
 
+import com.dts.case_manager_backend.exception.GlobalExceptionHandler;
 import com.dts.case_manager_backend.exception.InvalidDTOException;
 import com.dts.case_manager_backend.exception.TaskNotFoundException;
 import com.dts.case_manager_backend.model.Task;
@@ -50,7 +51,9 @@ class TaskControllerTest {
 
     @BeforeEach
     public void setup() {
-        mockMvcController = MockMvcBuilders.standaloneSetup(taskController).build();
+        mockMvcController = MockMvcBuilders.standaloneSetup(taskController)
+                .setControllerAdvice(new GlobalExceptionHandler())
+                .build();
         mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
     }

@@ -31,8 +31,8 @@ public class TaskController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Task> putTaskStatus(@PathVariable long id, @RequestBody String status) {
+    @PatchMapping("/{id}")
+    public ResponseEntity<Task> patchTaskStatus(@PathVariable long id, @RequestBody String status) {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

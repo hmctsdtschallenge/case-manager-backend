@@ -224,8 +224,9 @@ class TaskServiceImplTest {
         List<Task> returnedTasks = taskServiceImpl.retrieveAllTasks();
 
         //Assert
-        assertThat(returnedTasks).hasSize(1);
-        assertThat(returnedTasks).isEqualTo(expectedTasks);
+        assertAll(
+            () -> assertThat(returnedTasks).hasSize(1),
+            () -> assertThat(returnedTasks).isEqualTo(expectedTasks));
     }
 
     @Test
@@ -266,8 +267,11 @@ class TaskServiceImplTest {
         List<Task> returnedTasks = taskServiceImpl.retrieveAllTasks();
 
         //Assert
-        assertThat(returnedTasks).hasSize(3);
-        assertThat(returnedTasks).isEqualTo(expectedTasks);
+        List<Task> finalExpectedTasks = expectedTasks;
+
+        assertAll(
+            () -> assertThat(returnedTasks).hasSize(3),
+            () -> assertThat(returnedTasks).isEqualTo(finalExpectedTasks));
     }
 
     @Test
@@ -282,8 +286,9 @@ class TaskServiceImplTest {
         List<Task> returnedTasks = taskServiceImpl.retrieveAllTasks();
 
         //Assert
-        assertThat(returnedTasks).hasSize(0);
-        assertThat(returnedTasks).isEqualTo(expectedTasks);
+        assertAll(
+                () -> assertThat(returnedTasks).hasSize(0),
+                () -> assertThat(returnedTasks).isEqualTo(expectedTasks));
     }
 
     @Test
@@ -373,12 +378,13 @@ class TaskServiceImplTest {
         when(mockTaskRepository.findById(taskToEdit.getId())).thenReturn(Optional.of(taskToEdit));
 
         //Act & Assert
-        assertThrows(InvalidDTOException.class, () -> taskServiceImpl.updateTaskStatus(1L, ""));
-        assertThrows(InvalidDTOException.class, () -> taskServiceImpl.updateTaskStatus(1L, "hello"));
-        assertThrows(InvalidDTOException.class, () -> taskServiceImpl.updateTaskStatus(1L, "1234"));
-        assertThrows(InvalidDTOException.class, () -> taskServiceImpl.updateTaskStatus(1L, "NotYetStarted"));
-        assertThrows(InvalidDTOException.class, () -> taskServiceImpl.updateTaskStatus(1L, "Innnnn progress"));
-        assertThrows(InvalidDTOException.class, () -> taskServiceImpl.updateTaskStatus(1L, "Complete!?"));
+        assertAll(
+                () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.updateTaskStatus(1L, "")),
+                () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.updateTaskStatus(1L, "hello")),
+                () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.updateTaskStatus(1L, "1234")),
+                () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.updateTaskStatus(1L, "NotYetStarted")),
+                () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.updateTaskStatus(1L, "Innnnn progress")),
+                () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.updateTaskStatus(1L, "Complete!?")));
     }
 
     @Test

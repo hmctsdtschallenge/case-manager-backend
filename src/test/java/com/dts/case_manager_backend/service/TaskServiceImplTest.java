@@ -300,7 +300,7 @@ class TaskServiceImplTest {
             .build();
 
         Task expectedTask2= Task.builder()
-                .id(1L)
+                .id(2L)
                 .title("test title")
                 .description("test description")
                 .status("Not yet started")
@@ -309,7 +309,7 @@ class TaskServiceImplTest {
                 .build();
 
         Task expectedTask3 = Task.builder()
-                .id(1L)
+                .id(3L)
                 .title("test title")
                 .description("test description")
                 .status("Not yet started")

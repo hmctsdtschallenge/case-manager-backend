@@ -571,7 +571,7 @@ class TaskControllerTest {
         doNothing().when(taskService).deleteTask(1L);
 
         //Act
-        ResultActions response = mockMvcController.perform(delete("/api/vi/tasks/1"));
+        ResultActions response = mockMvcController.perform(delete("/api/v1/tasks/1"));
 
         //Assert
         response.andExpect(status().isNoContent());

@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidDTOException.class)
     public ResponseEntity<ErrorObject> handleInvalidDTOException(InvalidDTOException e){
 
-        HttpStatus httpStatus = HttpStatus.NOT_ACCEPTABLE;
+        HttpStatus httpStatus = HttpStatus.UNPROCESSABLE_ENTITY;
 
         ErrorObject errorObject = new ErrorObject(httpStatus.value(),e.getMessage(), LocalDateTime.now());
 

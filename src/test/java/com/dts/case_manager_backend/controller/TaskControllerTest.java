@@ -461,15 +461,15 @@ class TaskControllerTest {
         when(taskService.updateTaskStatus(3L, "Complete")).thenReturn(expectedTask3);
 
         //Act
-        ResultActions response1 = mockMvcController.perform(patch("/api/v1/tasks/1")                        .contentType(MediaType.APPLICATION_JSON)
+        ResultActions response1 = mockMvcController.perform(patch("/api/v1/tasks/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString("Not yet started")));
-        ResultActions response2 = mockMvcController.perform(patch("/api/v1/tasks/2")                        .contentType(MediaType.APPLICATION_JSON)
+                .content("Not yet started"));
+        ResultActions response2 = mockMvcController.perform(patch("/api/v1/tasks/2")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString("In progress")));
-        ResultActions response3 = mockMvcController.perform(patch("/api/v1/tasks/3")                        .contentType(MediaType.APPLICATION_JSON)
+                .content("In progress"));
+        ResultActions response3 = mockMvcController.perform(patch("/api/v1/tasks/3")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString("Complete")));
+                .content("Complete"));
 
         //Assert
         assertAll(

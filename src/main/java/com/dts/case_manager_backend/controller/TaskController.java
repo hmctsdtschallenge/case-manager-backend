@@ -38,7 +38,7 @@ public class TaskController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<Task> patchTaskStatus(@PathVariable long id, @RequestBody String status) {
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(taskService.updateTaskStatus(id, status), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

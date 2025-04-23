@@ -33,7 +33,7 @@ public class TaskController {
 
     @GetMapping
     public ResponseEntity<List<Task>> getAllTasks() {
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(taskService.retrieveAllTasks(), HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")

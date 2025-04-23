@@ -3,7 +3,12 @@ package com.dts.case_manager_backend.controller;
 import com.dts.case_manager_backend.model.Task;
 import com.dts.case_manager_backend.model.TaskDTO;
 import com.dts.case_manager_backend.service.TaskService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +23,7 @@ public class TaskController {
 
     @PostMapping
     public ResponseEntity<Task> postTask(@RequestBody TaskDTO taskDTO) {
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<Task>(taskService.createTask(taskDTO), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")

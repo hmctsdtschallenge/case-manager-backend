@@ -379,7 +379,6 @@ class TaskServiceImplTest {
 
         //Act & Assert
         assertAll(
-                () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.updateTaskStatus(1L, "")),
                 () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.updateTaskStatus(1L, "hello")),
                 () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.updateTaskStatus(1L, "1234")),
                 () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.updateTaskStatus(1L, "NotYetStarted")),

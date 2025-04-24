@@ -16,7 +16,7 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     TaskRepository taskRepository;
 
-    private List<String> validStatuses = List.of("Not yet started", "In progress", "Complete");
+    private List<String> validStatuses = List.of("\"Not yet started\"", "\"In progress\"", "\"Complete\"");
 
     @Override
     public Task createTask(TaskDTO taskDTO) {
@@ -53,8 +53,9 @@ public class TaskServiceImpl implements TaskService {
         if (!isValidStatus(status)) {
             throw new InvalidDTOException("Task cannot be updated because supplied status is not valid.  Valid statuses are: ".concat(validStatuses.toString()));
         }
+        String statusWithoutQuotes = status.substring(1, status.length()-1);
 
-        taskToUpdate.setStatus(status);
+        taskToUpdate.setStatus(statusWithoutQuotes);
 
         return taskRepository.save(taskToUpdate);
     }

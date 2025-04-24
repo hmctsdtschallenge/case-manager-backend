@@ -16,7 +16,7 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     TaskRepository taskRepository;
 
-    private List<String> validStatuses = List.of("\"Not yet started\"", "\"In progress\"", "\"Complete\"");
+    private List<String> validStatuses = List.of("Not yet started", "In progress", "Complete");
 
     @Override
     public Task createTask(TaskDTO taskDTO) {
@@ -50,10 +50,11 @@ public class TaskServiceImpl implements TaskService {
     public Task updateTaskStatus(Long id, String status) {
         Task taskToUpdate = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException("Task cannot be updated because no task could be found with the supplied id"));
 
-        if (!isValidStatus(status)) {
+        String statusWithoutQuotes = removeQuotes(status);
+
+        if (!isValidStatus(statusWithoutQuotes)) {
             throw new InvalidDTOException("Task cannot be updated because supplied status is not valid.  Valid statuses are: ".concat(validStatuses.toString()));
         }
-        String statusWithoutQuotes = status.substring(1, status.length()-1);
 
         taskToUpdate.setStatus(statusWithoutQuotes);
 
@@ -96,6 +97,19 @@ public class TaskServiceImpl implements TaskService {
                 taskDTO.status().isEmpty();
     }
 
+    private String removeQuotes(String status) {
+        String statusWithoutQuotes = status;
+
+        if (status.charAt(0) == '"') {
+            statusWithoutQuotes = statusWithoutQuotes.substring(1);
+        }
+
+        if (status.charAt(status.length()-1) == '"') {
+            statusWithoutQuotes = statusWithoutQuotes.substring(0, statusWithoutQuotes.length()-1);
+        }
+
+        return statusWithoutQuotes;
+    }
     private boolean isValidStatus(String status) {
         return validStatuses.contains(status);
     }

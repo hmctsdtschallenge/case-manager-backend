@@ -29,6 +29,10 @@ public class TaskServiceImpl implements TaskService {
             throw new InvalidDTOException("Task could not be created because supplied tasks cannot have empty string fields.");
         }
 
+        if (!isValidStatus(taskDTO.status())) {
+            throw new InvalidDTOException("Task cannot be updated because supplied status is not valid.  Valid statuses are: ".concat(validStatuses.toString()));
+        }
+
         return taskRepository.save(taskDTOToTask(taskDTO));
     }
 

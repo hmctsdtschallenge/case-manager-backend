@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -23,11 +24,11 @@ public class TaskServiceImpl implements TaskService {
     public Task createTask(TaskDTO taskDTO) {
 
         if (containsNullFields(taskDTO)) {
-            throw new InvalidDTOException("Task could not be created because supplied tasks cannot have null fields.");
+            throw new InvalidDTOException("Task could not be created because a mandatory field was not supplied.");
         }
 
         if (containsEmptyFields(taskDTO)) {
-            throw new InvalidDTOException("Task could not be created because supplied tasks cannot have empty string fields.");
+            throw new InvalidDTOException("Task could not be created because mandatory fields cannot be empty.");
         }
 
         if (!isValidStatus(taskDTO.status())) {
@@ -77,7 +78,7 @@ public class TaskServiceImpl implements TaskService {
     public Task taskDTOToTask(TaskDTO taskDTO) {
         return Task.builder()
                 .title(taskDTO.title())
-                .description(taskDTO.description())
+                .description(Objects.requireNonNullElse(taskDTO.description(), ""))
                 .status(taskDTO.status())
                 .createdDate(taskDTO.createdDate())
                 .dueDate(taskDTO.dueDate())
@@ -87,7 +88,6 @@ public class TaskServiceImpl implements TaskService {
     private boolean containsNullFields(TaskDTO taskDTO) {
         try {
             return taskDTO.title() == null ||
-                    taskDTO.description() == null ||
                     taskDTO.status() == null ||
                     taskDTO.createdDate() == null ||
                     taskDTO.dueDate() == null;}
@@ -98,26 +98,10 @@ public class TaskServiceImpl implements TaskService {
 
     private boolean containsEmptyFields(TaskDTO taskDTO) {
         return taskDTO.title().isEmpty() ||
-                taskDTO.description().isEmpty() ||
                 taskDTO.status().isEmpty();
     }
 
-    private String removeQuotes(String status) {
-        String statusWithoutQuotes = status;
-
-        if (status.charAt(0) == '"') {
-            statusWithoutQuotes = statusWithoutQuotes.substring(1);
-        }
-
-        if (status.charAt(status.length()-1) == '"') {
-            statusWithoutQuotes = statusWithoutQuotes.substring(0, statusWithoutQuotes.length()-1);
-        }
-
-        return statusWithoutQuotes;
-    }
     private boolean isValidStatus(String status) {
         return validStatuses.contains(status);
     }
-
-
 }

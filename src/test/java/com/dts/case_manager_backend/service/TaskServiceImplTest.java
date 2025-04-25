@@ -71,19 +71,82 @@ class TaskServiceImplTest {
     }
 
     @Test
+    @DisplayName("createTask returns created task when passed valid TaskDTO with null description")
+    void createTaskValidDTONullDescription() {
+        //Arrange
+        TaskDTO inputTaskDTO = new TaskDTO(
+                "test title",
+                null,
+                "In progress",
+                LocalDateTime.of(2025, Month.JANUARY, 1, 1, 1, 1),
+                LocalDateTime.of(2025, Month.FEBRUARY, 2, 2, 2, 2));
+
+        Task expectedTask = Task.builder()
+                .id(1L)
+                .title("test title")
+                .description("")
+                .status("In progress")
+                .createdDate(LocalDateTime.of(2025, Month.JANUARY, 1, 1, 1, 1))
+                .dueDate(LocalDateTime.of(2025, Month.FEBRUARY, 2, 2, 2, 2))
+                .build();
+
+        when(mockTaskRepository.save(Mockito.any(Task.class))).thenReturn(expectedTask);
+
+        //Act
+        Task returnedTask = taskServiceImpl.createTask(inputTaskDTO);
+
+        //Assert
+        assertAll(
+                () -> assertEquals(1L, returnedTask.getId()),
+                () -> assertEquals(inputTaskDTO.title(), returnedTask.getTitle()),
+                () -> assertEquals("", returnedTask.getDescription()),
+                () -> assertEquals(inputTaskDTO.status(), returnedTask.getStatus()),
+                () -> assertEquals(inputTaskDTO.createdDate(), returnedTask.getCreatedDate()),
+                () -> assertEquals(inputTaskDTO.dueDate(), returnedTask.getDueDate()));
+    }
+
+    @Test
+    @DisplayName("createTask returns created task when passed valid TaskDTO with empty description")
+    void createTaskValidDTOEmptyDescription() {
+        //Arrange
+        TaskDTO inputTaskDTO = new TaskDTO(
+                "test title",
+                "",
+                "In progress",
+                LocalDateTime.of(2025, Month.JANUARY, 1, 1, 1, 1),
+                LocalDateTime.of(2025, Month.FEBRUARY, 2, 2, 2, 2));
+
+        Task expectedTask = Task.builder()
+                .id(1L)
+                .title("test title")
+                .description("")
+                .status("In progress")
+                .createdDate(LocalDateTime.of(2025, Month.JANUARY, 1, 1, 1, 1))
+                .dueDate(LocalDateTime.of(2025, Month.FEBRUARY, 2, 2, 2, 2))
+                .build();
+
+        when(mockTaskRepository.save(Mockito.any(Task.class))).thenReturn(expectedTask);
+
+        //Act
+        Task returnedTask = taskServiceImpl.createTask(inputTaskDTO);
+
+        //Assert
+        assertAll(
+                () -> assertEquals(1L, returnedTask.getId()),
+                () -> assertEquals(inputTaskDTO.title(), returnedTask.getTitle()),
+                () -> assertEquals(inputTaskDTO.description(), returnedTask.getDescription()),
+                () -> assertEquals(inputTaskDTO.status(), returnedTask.getStatus()),
+                () -> assertEquals(inputTaskDTO.createdDate(), returnedTask.getCreatedDate()),
+                () -> assertEquals(inputTaskDTO.dueDate(), returnedTask.getDueDate()));
+    }
+
+    @Test
     @DisplayName("createTask throws InvalidDTOException when passed TaskDTO with null fields")
     void createTaskInvalidDTONull() {
         //Arrange
         TaskDTO inputTaskDTO1 = new TaskDTO(
                 null,
                 "test description",
-                "In progress",
-                LocalDateTime.of(2025, Month.JANUARY, 1, 1, 1, 1),
-                LocalDateTime.of(2025, Month.FEBRUARY, 2, 2, 2, 2));
-
-        TaskDTO inputTaskDTO2 = new TaskDTO(
-                "test title",
-                null,
                 "In progress",
                 LocalDateTime.of(2025, Month.JANUARY, 1, 1, 1, 1),
                 LocalDateTime.of(2025, Month.FEBRUARY, 2, 2, 2, 2));
@@ -111,7 +174,7 @@ class TaskServiceImplTest {
 
         TaskDTO inputTaskDTO6 = new TaskDTO(
                 null,
-                null,
+                "test description",
                 null,
                 null,
                 null);
@@ -119,7 +182,6 @@ class TaskServiceImplTest {
         //Act & Assert
         assertAll(
                 () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.createTask(inputTaskDTO1)),
-                () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.createTask(inputTaskDTO2)),
                 () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.createTask(inputTaskDTO3)),
                 () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.createTask(inputTaskDTO4)),
                 () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.createTask(inputTaskDTO5)),
@@ -137,13 +199,6 @@ class TaskServiceImplTest {
                 LocalDateTime.of(2025, Month.JANUARY, 1, 1, 1, 1),
                 LocalDateTime.of(2025, Month.FEBRUARY, 2, 2, 2, 2));
 
-        TaskDTO inputTaskDTO2 = new TaskDTO(
-                "test title",
-                "",
-                "In progress",
-                LocalDateTime.of(2025, Month.JANUARY, 1, 1, 1, 1),
-                LocalDateTime.of(2025, Month.FEBRUARY, 2, 2, 2, 2));
-
         TaskDTO inputTaskDTO3 = new TaskDTO(
                 "test title",
                 "test description",
@@ -153,7 +208,7 @@ class TaskServiceImplTest {
 
         TaskDTO inputTaskDTO4 = new TaskDTO(
                 "",
-                "",
+                "test description",
                 "",
                 LocalDateTime.of(2025, Month.JANUARY, 1, 1, 1, 1),
                 LocalDateTime.of(2025, Month.FEBRUARY, 2, 2, 2, 2));
@@ -162,7 +217,6 @@ class TaskServiceImplTest {
         //Act & Assert
         assertAll(
                 () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.createTask(inputTaskDTO1)),
-                () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.createTask(inputTaskDTO2)),
                 () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.createTask(inputTaskDTO3)),
                 () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.createTask(inputTaskDTO4)));
     }

@@ -3,6 +3,7 @@ package com.dts.case_manager_backend.controller;
 import com.dts.case_manager_backend.exception.GlobalExceptionHandler;
 import com.dts.case_manager_backend.exception.InvalidDTOException;
 import com.dts.case_manager_backend.exception.TaskNotFoundException;
+import com.dts.case_manager_backend.model.StatusDTO;
 import com.dts.case_manager_backend.model.Task;
 import com.dts.case_manager_backend.model.TaskDTO;
 import com.dts.case_manager_backend.service.TaskService;
@@ -544,6 +545,10 @@ class TaskControllerTest {
     @Test
     @DisplayName("patchTaskStatus returns OK and correct updated Task when passed id which exists and valid status")
     void patchTaskStatusValidIdAndStatus() throws Exception {
+        StatusDTO statusDTO1 = new StatusDTO("Not yet started");
+        StatusDTO statusDTO2 = new StatusDTO("Not yet started");
+        StatusDTO statusDTO3 = new StatusDTO("Not yet started");
+
         Task expectedTask1 = Task.builder()
                 .id(1L)
                 .title("test title")
@@ -571,20 +576,20 @@ class TaskControllerTest {
                 .dueDate(LocalDateTime.of(2025, Month.FEBRUARY, 2, 2, 2, 2))
                 .build();
 
-        when(taskService.updateTaskStatus(1L, "Not yet started")).thenReturn(expectedTask1);
-        when(taskService.updateTaskStatus(2L, "In progress")).thenReturn(expectedTask2);
-        when(taskService.updateTaskStatus(3L, "Complete")).thenReturn(expectedTask3);
+        when(taskService.updateTaskStatus(1L, statusDTO1)).thenReturn(expectedTask1);
+        when(taskService.updateTaskStatus(2L, statusDTO2)).thenReturn(expectedTask2);
+        when(taskService.updateTaskStatus(3L, statusDTO3)).thenReturn(expectedTask3);
 
         //Act
         ResultActions response1 = mockMvcController.perform(patch("/api/v1/tasks/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("Not yet started"));
+                .content(mapper.writeValueAsString(statusDTO1)));
         ResultActions response2 = mockMvcController.perform(patch("/api/v1/tasks/2")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("In progress"));
+                .content(mapper.writeValueAsString(statusDTO2)));
         ResultActions response3 = mockMvcController.perform(patch("/api/v1/tasks/3")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("Complete"));
+                .content(mapper.writeValueAsString(statusDTO3)));
 
         //Assert
         assertAll(
@@ -617,59 +622,74 @@ class TaskControllerTest {
     @DisplayName("patchTaskStatus returns UNPROCESSABLE (422) when passed invalid status")
     void patchTaskStatusInvalidStatus() throws Exception {
         //Arrange
-        String status2 = "hello";
-        String status3 = "1234";
-        String status4 = "NotStartedYet";
-        String status5 = "Innn progress";
-        String status6 = "Complete?!";
+        StatusDTO statusDTO1 = new StatusDTO("hello");
+        StatusDTO statusDTO2 = new StatusDTO("1234");
+        StatusDTO statusDTO3 = new StatusDTO("NotStartedYet");
+        StatusDTO statusDTO4 = new StatusDTO("Innnnn progress");
+        StatusDTO statusDTO5 = new StatusDTO("Complete?!");
+        StatusDTO statusDTO6 = new StatusDTO("in progress");
+        StatusDTO statusDTO7 = new StatusDTO("\"Complete\"");
 
-        when(taskService.updateTaskStatus(1L, status2)).thenThrow(InvalidDTOException.class);
-        when(taskService.updateTaskStatus(1L, status3)).thenThrow(InvalidDTOException.class);
-        when(taskService.updateTaskStatus(1L, status4)).thenThrow(InvalidDTOException.class);
-        when(taskService.updateTaskStatus(1L, status5)).thenThrow(InvalidDTOException.class);
-        when(taskService.updateTaskStatus(1L, status6)).thenThrow(InvalidDTOException.class);
+        when(taskService.updateTaskStatus(1L, statusDTO1)).thenThrow(InvalidDTOException.class);
+        when(taskService.updateTaskStatus(1L, statusDTO2)).thenThrow(InvalidDTOException.class);
+        when(taskService.updateTaskStatus(1L, statusDTO3)).thenThrow(InvalidDTOException.class);
+        when(taskService.updateTaskStatus(1L, statusDTO4)).thenThrow(InvalidDTOException.class);
+        when(taskService.updateTaskStatus(1L, statusDTO5)).thenThrow(InvalidDTOException.class);
+        when(taskService.updateTaskStatus(1L, statusDTO6)).thenThrow(InvalidDTOException.class);
+        when(taskService.updateTaskStatus(1L, statusDTO7)).thenThrow(InvalidDTOException.class);
 
         //Act
+        ResultActions response1 = mockMvcController.perform(patch("/api/v1/tasks/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(statusDTO1)));
+
         ResultActions response2 = mockMvcController.perform(patch("/api/v1/tasks/1")
-                .contentType(MediaType.TEXT_PLAIN)
-                .content(status2));
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(statusDTO2)));
 
         ResultActions response3 = mockMvcController.perform(patch("/api/v1/tasks/1")
-                .contentType(MediaType.TEXT_PLAIN)
-                .content(status3));
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(statusDTO3)));
 
         ResultActions response4 = mockMvcController.perform(patch("/api/v1/tasks/1")
-                .contentType(MediaType.TEXT_PLAIN)
-                .content(status4));
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(statusDTO4)));
 
         ResultActions response5 = mockMvcController.perform(patch("/api/v1/tasks/1")
-                .contentType(MediaType.TEXT_PLAIN)
-                .content(status5));
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(statusDTO5)));
 
         ResultActions response6 = mockMvcController.perform(patch("/api/v1/tasks/1")
-                .contentType(MediaType.TEXT_PLAIN)
-                .content(status6));
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(statusDTO6)));
+
+        ResultActions response7 = mockMvcController.perform(patch("/api/v1/tasks/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(statusDTO7)));
 
         //Assert
         assertAll(
+                () -> response1.andExpect(status().isUnprocessableEntity()),
                 () -> response2.andExpect(status().isUnprocessableEntity()),
                 () -> response3.andExpect(status().isUnprocessableEntity()),
                 () -> response4.andExpect(status().isUnprocessableEntity()),
                 () -> response5.andExpect(status().isUnprocessableEntity()),
-                () -> response6.andExpect(status().isUnprocessableEntity()));
+                () -> response6.andExpect(status().isUnprocessableEntity()),
+                () -> response7.andExpect(status().isUnprocessableEntity()));
     }
 
     @Test
     @DisplayName("patchTaskStatus returns NOT_FOUND (404) when passed id which is not in database")
     void patchTaskStatusIdDoesNotExist() throws Exception {
         //Arrange
-        String status = "Complete";
-        when(taskService.updateTaskStatus(1L, status)).thenThrow(TaskNotFoundException.class);
+        StatusDTO statusDto =  new StatusDTO("Complete");
+
+        when(taskService.updateTaskStatus(1L, statusDto)).thenThrow(TaskNotFoundException.class);
 
         //Act
         ResultActions response = mockMvcController.perform(patch("/api/v1/tasks/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(status));
+                .content(mapper.writeValueAsString(statusDto)));
 
         //Assert
         response.andExpect(status().isNotFound());

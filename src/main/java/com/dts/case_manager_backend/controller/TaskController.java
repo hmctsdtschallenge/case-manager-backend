@@ -1,5 +1,6 @@
 package com.dts.case_manager_backend.controller;
 
+import com.dts.case_manager_backend.model.StatusDTO;
 import com.dts.case_manager_backend.model.Task;
 import com.dts.case_manager_backend.model.TaskDTO;
 import com.dts.case_manager_backend.service.TaskService;
@@ -37,8 +38,8 @@ public class TaskController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Task> patchTaskStatus(@PathVariable long id, @RequestBody String status) {
-        return new ResponseEntity<>(taskService.updateTaskStatus(id, status), HttpStatus.OK);
+    public ResponseEntity<Task> patchTaskStatus(@PathVariable long id, @RequestBody StatusDTO statusDTO) {
+        return new ResponseEntity<>(taskService.updateTaskStatus(id, statusDTO), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

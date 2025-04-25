@@ -2,6 +2,7 @@ package com.dts.case_manager_backend.service;
 
 import com.dts.case_manager_backend.exception.InvalidDTOException;
 import com.dts.case_manager_backend.exception.TaskNotFoundException;
+import com.dts.case_manager_backend.model.StatusDTO;
 import com.dts.case_manager_backend.model.Task;
 import com.dts.case_manager_backend.model.TaskDTO;
 import com.dts.case_manager_backend.repository.TaskRepository;
@@ -51,16 +52,16 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task updateTaskStatus(Long id, String status) {
+    public Task updateTaskStatus(Long id, StatusDTO statusDTO) {
         Task taskToUpdate = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException("Task cannot be updated because no task could be found with the supplied id"));
 
-        String statusWithoutQuotes = removeQuotes(status);
+        String status = statusDTO.status();
 
-        if (!isValidStatus(statusWithoutQuotes)) {
+        if (!isValidStatus(status)) {
             throw new InvalidDTOException("Task cannot be updated because supplied status is not valid.  Valid statuses are: ".concat(validStatuses.toString()));
         }
 
-        taskToUpdate.setStatus(statusWithoutQuotes);
+        taskToUpdate.setStatus(status);
 
         return taskRepository.save(taskToUpdate);
     }

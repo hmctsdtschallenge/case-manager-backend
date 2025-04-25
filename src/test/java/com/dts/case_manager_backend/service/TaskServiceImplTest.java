@@ -2,6 +2,7 @@ package com.dts.case_manager_backend.service;
 
 import com.dts.case_manager_backend.exception.InvalidDTOException;
 import com.dts.case_manager_backend.exception.TaskNotFoundException;
+import com.dts.case_manager_backend.model.StatusDTO;
 import com.dts.case_manager_backend.model.Task;
 import com.dts.case_manager_backend.model.TaskDTO;
 import com.dts.case_manager_backend.repository.TaskRepository;
@@ -359,6 +360,10 @@ class TaskServiceImplTest {
     @DisplayName("updateTaskStatus returns updated task when passed id which exists, and valid status")
     void updateTaskStatusValidIdAndStatus() {
         //Arrange
+        StatusDTO statusDTO1 = new StatusDTO("Not yet started");
+        StatusDTO statusDTO2 = new StatusDTO("Not yet started");
+        StatusDTO statusDTO3 = new StatusDTO("Not yet started");
+
         Task expectedTask1 = Task.builder()
             .id(1L)
             .title("test title")
@@ -395,9 +400,9 @@ class TaskServiceImplTest {
         when(mockTaskRepository.save(expectedTask3)).thenReturn(expectedTask3);
 
         //Act
-        Task returnedTask1 = taskServiceImpl.updateTaskStatus(1L, "Not yet started");
-        Task returnedTask2 = taskServiceImpl.updateTaskStatus(2L, "In progress");
-        Task returnedTask3 = taskServiceImpl.updateTaskStatus(3L, "Complete");
+        Task returnedTask1 = taskServiceImpl.updateTaskStatus(1L, statusDTO1);
+        Task returnedTask2 = taskServiceImpl.updateTaskStatus(2L, statusDTO2);
+        Task returnedTask3 = taskServiceImpl.updateTaskStatus(3L, statusDTO3);
 
         //Assert
         assertAll(
@@ -413,9 +418,9 @@ class TaskServiceImplTest {
                 () -> assertEquals(expectedTask2.getDescription(), returnedTask2.getDescription()),
                 () -> assertEquals(expectedTask3.getDescription(), returnedTask3.getDescription()),
 
-                () -> assertEquals("Not yet started", returnedTask1.getStatus()),
-                () -> assertEquals("In progress", returnedTask2.getStatus()),
-                () -> assertEquals("Complete", returnedTask3.getStatus()),
+                () -> assertEquals(statusDTO1.status(), returnedTask1.getStatus()),
+                () -> assertEquals(statusDTO2.status(), returnedTask2.getStatus()),
+                () -> assertEquals(statusDTO3.status(), returnedTask3.getStatus()),
 
                 () -> assertEquals(expectedTask1.getCreatedDate(), returnedTask1.getCreatedDate()),
                 () -> assertEquals(expectedTask2.getCreatedDate(), returnedTask2.getCreatedDate()),
@@ -430,6 +435,14 @@ class TaskServiceImplTest {
     @DisplayName("updateTaskStatus throws InvalidDTOException when passed invalid status")
     void updateTaskStatusInvalidStatus() {
         //Arrange
+        StatusDTO statusDTO1 = new StatusDTO("hello");
+        StatusDTO statusDTO2 = new StatusDTO("1234");
+        StatusDTO statusDTO3 = new StatusDTO("NotStartedYet");
+        StatusDTO statusDTO4 = new StatusDTO("Innnnn progress");
+        StatusDTO statusDTO5 = new StatusDTO("Complete?!");
+        StatusDTO statusDTO6 = new StatusDTO("in progress");
+        StatusDTO statusDTO7 = new StatusDTO("\"Complete\"");
+
         Task taskToEdit = Task.builder()
                 .id(1L)
                 .title("test title")
@@ -443,20 +456,20 @@ class TaskServiceImplTest {
 
         //Act & Assert
         assertAll(
-                () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.updateTaskStatus(1L, "hello")),
-                () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.updateTaskStatus(1L, "")),
-                () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.updateTaskStatus(1L, "1234")),
-                () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.updateTaskStatus(1L, "NotYetStarted")),
-                () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.updateTaskStatus(1L, "Innnnn progress")),
-                () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.updateTaskStatus(1L, "Complete!?")),
-                () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.updateTaskStatus(1L, "in progress")),
-                () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.updateTaskStatus(1L, "\"Complete\"")));
+                () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.updateTaskStatus(1L, statusDTO1)),
+                () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.updateTaskStatus(1L, statusDTO2)),
+                () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.updateTaskStatus(1L, statusDTO3)),
+                () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.updateTaskStatus(1L, statusDTO4)),
+                () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.updateTaskStatus(1L, statusDTO5)),
+                () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.updateTaskStatus(1L, statusDTO6)),
+                () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.updateTaskStatus(1L, statusDTO7)));
     }
 
     @Test
     @DisplayName("updateTaskStatus throws TaskNotFoundException when passed id which does not exist in database")
     void updateTaskStatusIdDoesNotExist() {
         //Arrange
+        StatusDTO statusDTO = new StatusDTO("Complete");
         Task taskToEdit = Task.builder()
                 .id(1L)
                 .title("test title")
@@ -469,7 +482,7 @@ class TaskServiceImplTest {
         when(mockTaskRepository.findById(1L)).thenReturn(Optional.empty());
 
         //Act & Assert
-        assertThrows(TaskNotFoundException.class, () -> taskServiceImpl.updateTaskStatus(1L, "Not yet started"));
+        assertThrows(TaskNotFoundException.class, () -> taskServiceImpl.updateTaskStatus(1L, statusDTO));
     }
 
     @Test

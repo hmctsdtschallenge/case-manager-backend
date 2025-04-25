@@ -167,6 +167,70 @@ class TaskServiceImplTest {
     }
 
     @Test
+    @DisplayName("createTask throws InvalidDTOException when passed TaskDTO with invalid status")
+    void createTaskInvalidStatus() {
+        //Arrange
+        TaskDTO inputTaskDTO1 = new TaskDTO(
+                "title",
+                "test description",
+                "hello",
+                LocalDateTime.of(2025, Month.JANUARY, 1, 1, 1, 1),
+                LocalDateTime.of(2025, Month.FEBRUARY, 2, 2, 2, 2));
+
+        TaskDTO inputTaskDTO2 = new TaskDTO(
+                "title",
+                "test description",
+                "1234",
+                LocalDateTime.of(2025, Month.JANUARY, 1, 1, 1, 1),
+                LocalDateTime.of(2025, Month.FEBRUARY, 2, 2, 2, 2));
+
+        TaskDTO inputTaskDTO3 = new TaskDTO(
+                "title",
+                "test description",
+                "NotYetStarted",
+                LocalDateTime.of(2025, Month.JANUARY, 1, 1, 1, 1),
+                LocalDateTime.of(2025, Month.FEBRUARY, 2, 2, 2, 2));
+
+        TaskDTO inputTaskDTO4 = new TaskDTO(
+                "title",
+                "test description",
+                "Innnnn progress",
+                LocalDateTime.of(2025, Month.JANUARY, 1, 1, 1, 1),
+                LocalDateTime.of(2025, Month.FEBRUARY, 2, 2, 2, 2));
+
+        TaskDTO inputTaskDTO5 = new TaskDTO(
+                "title",
+                "test description",
+                "complete?!",
+                LocalDateTime.of(2025, Month.JANUARY, 1, 1, 1, 1),
+                LocalDateTime.of(2025, Month.FEBRUARY, 2, 2, 2, 2));
+
+        TaskDTO inputTaskDTO6 = new TaskDTO(
+                "title",
+                "test description",
+                "in progress",
+                LocalDateTime.of(2025, Month.JANUARY, 1, 1, 1, 1),
+                LocalDateTime.of(2025, Month.FEBRUARY, 2, 2, 2, 2));
+
+        TaskDTO inputTaskDTO7 = new TaskDTO(
+                "title",
+                "test description",
+                "\"complete\"",
+                LocalDateTime.of(2025, Month.JANUARY, 1, 1, 1, 1),
+                LocalDateTime.of(2025, Month.FEBRUARY, 2, 2, 2, 2));
+
+        //Act & Assert
+        assertAll(
+                () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.createTask(inputTaskDTO1)),
+                () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.createTask(inputTaskDTO2)),
+                () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.createTask(inputTaskDTO3)),
+                () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.createTask(inputTaskDTO4)),
+                () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.createTask(inputTaskDTO5)),
+                () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.createTask(inputTaskDTO6)),
+                () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.createTask(inputTaskDTO7)));
+    }
+
+    @Test
     @DisplayName("retrieveTaskById returns correct task when passed Id")
     void retrieveTaskByIdValidId() {
         //Arrange
@@ -384,7 +448,9 @@ class TaskServiceImplTest {
                 () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.updateTaskStatus(1L, "1234")),
                 () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.updateTaskStatus(1L, "NotYetStarted")),
                 () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.updateTaskStatus(1L, "Innnnn progress")),
-                () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.updateTaskStatus(1L, "Complete!?")));
+                () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.updateTaskStatus(1L, "Complete!?")),
+                () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.updateTaskStatus(1L, "in progress")),
+                () -> assertThrows(InvalidDTOException.class, () -> taskServiceImpl.updateTaskStatus(1L, "\"Complete\"")));
     }
 
     @Test
